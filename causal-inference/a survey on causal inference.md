@@ -23,7 +23,7 @@
     - 상관관계:두 변수가 함께 움직이는 경향
     - 인과관계:한 변수가 다른 변수의 원인
 - 상관관계는 인과관계가 아님
-- 이 논문은 **관측 데이터에서 진짜 인과효과를 어떻게 추정할 것인가?**라는 질문 다룸
+- 이 논문은 **관측 데이터에서 진짜 인과효과를 어떻게 추정할 것인가?** 라는 질문 다룸
 
 - 관측 데이터가 중요한 이유?
     - Randomized controlled trial (RCT)
@@ -92,7 +92,7 @@
             - 현실에서는 효과가 사람마다 다름
             - Heterogeneous Treatement Effect라 부름 -> 이질적 효과를 집단단위로 포착
 - 세가지 핵심 가정
-    1. SUTVA
+    1. SUTVA (Stable Unit Treatment Value Assumption)
         - 다른사람의 처치가 내 결과에 영향을 주지 않고, 같은 처치는 항상 동일한 의미를 갖는다는 가정
         - SUTVA는 두가지 가정의 묶음
             - 개인의 결과는 다른 개인이 어떤 처치를 받았는지와 무관
@@ -100,7 +100,7 @@
     2. Ignorability (Unconfoundedness)
         - 관측한 변수 x만 알고있으면, 누가 처치를 받았는지는 사실상 무작위와 같음
         - 즉, 숨겨진 confounder가 없음, 모든 중요한 confounder을 다 측정함
-    3. positivity
+    3. Positivity (양의 확률)
         - 모든 특성 X=x에 대해 모든 처치가 발생할 확률이 0이 아님
         - 즉, 어떤 집단도 "항상 처치를 받거나, 절대 받지않는" 경우가 없어야함
 - confounder(교란변수)와 문제점
@@ -113,11 +113,23 @@
             ```
         - t&rarr;y: 우리가 알고 싶은 인과효과
         - x: 교란변수
-        - 따라서, 관측 데이터에서 인과효과를 추정하려면 교란변수를 적절히 조정해야함
+          - e.g. "IQ가 높은 아이는 신발사이즈도 크다. 그러니 IQ를 높이려면 발사이즈를 키워야한다."
+            - 사실: 나이가 많을수록 발도 크고, IQ도 높음
+            - 즉, 나이라는 교란변수(confounder)때문에 신발 사이즈와 iq가 관련있어보이는 것
+        - 따라서, 관측 데이터에서 인과효과를 추정하려면 **교란변수를 적절히 보정(adjustment)** 해야함
     - 문제
         - spurious effect
         - simpson's paradox
         - selection bias
+    - 변수관계 정리 (논문 외)
+    
+    | 변수                          | 관계                          | 해결방법      | 비고                                 |
+    |-----------------------------|-----------------------------|-----------|------------------------------------|
+    | Confounder(교란변수)            | $v&rarr;E&rarr;O, v&rarr;O$ | 반드시 보정    | 안하면 $E&rarr;O$ 관계 왜곡               |
+    | Mediator(매개변수)              | $E&rarr;v&rarr;O$           | 보정x       | 전체효과가 아닌 직접효과만 남게됨                 |
+    | Collider(충돌변수)              | $E&rarr;v&larr;O$           | 보정x       | 인위적 상관관계 생김(selection Bias가능성)     |
+    | Effect Modifier(효과수정변수)     | $E&rarr;O, v$에 따라 효과 다름     | 상호작용 항 추가 | 단순보정보다 상호작용항을 통해 효과가 달라지는 패턴 자체 분석 |
+    | Instrumental Variable(도구변수) | $v&rarr;E&rarr;O, v⊄O$      | 직접보정x     | 인과 추정 도구로 사용(2SLS등)                |
 ### 3. Methods Relying on Three Assumptions
 위의 3가지 가정을 모두 믿을 수 있다면, 관측 데이터만으로도 인과효과를 추정할 수 있다.
 그때 사용할 수 있는 방법들은 무엇인가?
@@ -133,6 +145,8 @@
     - 나와 가장 비슷한 다른 사람을 찾아 비교
     - 방법
         - Nearest Neighbor, Caliper, Kernel Matching, CEM
+        - e.g. (2장>confounder의 예시 참고) 같은 나이대인 아이들끼리 비교
+          - 8살이고 신발 210mm인 아이와, 비슷한 나이지만 190mm인 아이 비교 &rarr; 나이의 영향을 통제한 상태에서 신발크기만 다를 떄의 IQ차이 관찰
 - Tree-based Methods
     - 의사결정트리를 이용해 처치효과가 이질적인 하위집단을 자동으로 발견
 - Representation-based Methods
